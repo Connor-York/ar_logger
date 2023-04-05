@@ -7,6 +7,7 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 def callback_ar_pose(msg):
     for marker in msg.markers:
         rospy.loginfo(marker.id)
+        rospy.loginfo(marker.pose.pose)
 
 
 
