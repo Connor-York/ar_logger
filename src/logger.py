@@ -14,7 +14,7 @@ def callback_ar_pose(msg):
         #rospy.loginfo(marker.id)
         #rospy.loginfo(marker.pose.pose)
         if marker.id != current_marker: # Check to prevent multi-logging
-            current_marker = marker.id
+            global current_marker = marker.id
             ID_list.append(current_marker)
             rospy.loginfo(current_marker)
             rospy.loginfo(ID_list)
