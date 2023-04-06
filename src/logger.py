@@ -7,6 +7,7 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 #declaring variables, honestly don't know if this is bad python practice
 ID_list = []
 current_marker = 999 #placeholder variable to prevent logging the same ID more than once
+CSV_path = ("~/ros_ws/src/ar_logger/logs/IDlog.csv")
 
 def dupe_check(iterable,check):
     for x in iterable:
@@ -15,6 +16,7 @@ def dupe_check(iterable,check):
 
 def callback_ar_pose(msg):
     for marker in msg.markers:
+        global ID_list
         global current_marker
         # These two just print the ID and Pose to the cmd line
         #rospy.loginfo(marker.id)
@@ -28,7 +30,13 @@ def callback_ar_pose(msg):
             rospy.loginfo(current_marker)
             rospy.loginfo(ID_list)
 
-            
+def save_to_csv():
+    
+    with open(CSV_path, 'w') as f:
+
+        writer = csv.writer(f)
+
+        writer.writerow(ID_list)
 
 
 if __name__ == "__main__":
@@ -38,4 +46,5 @@ if __name__ == "__main__":
             "ar_pose_marker", AlvarMarkers, callback_ar_pose  
         )
         rospy.spin()
+        rospy.on_shutdown(save_to_csv)
 
