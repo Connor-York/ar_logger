@@ -8,6 +8,11 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 ID_list = []
 current_marker = 999 #placeholder variable to prevent logging the same ID more than once
 
+def dupe_check(iterable,check):
+    for x in iterable:
+        if x == check:
+            return True
+
 def callback_ar_pose(msg):
     for marker in msg.markers:
         global current_marker
@@ -16,7 +21,7 @@ def callback_ar_pose(msg):
         #rospy.loginfo(marker.pose.pose)
         if marker.id != current_marker: # Check to prevent multi-logging
             current_marker = marker.id
-            if any(x = current_marker for x in ID_list):
+            if dupe_check(ID_list,current_marker) == True:
                 continue
             else:
                 ID_list.append(current_marker)
