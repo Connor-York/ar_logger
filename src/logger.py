@@ -10,11 +10,12 @@ current_marker = 999 #placeholder variable to prevent logging the same ID more t
 
 def callback_ar_pose(msg):
     for marker in msg.markers:
+        global current_marker
         # These two just print the ID and Pose to the cmd line
         #rospy.loginfo(marker.id)
         #rospy.loginfo(marker.pose.pose)
         if marker.id != current_marker: # Check to prevent multi-logging
-            global current_marker = marker.id
+            current_marker = marker.id
             ID_list.append(current_marker)
             rospy.loginfo(current_marker)
             rospy.loginfo(ID_list)
