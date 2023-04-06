@@ -3,11 +3,14 @@
 import rospy
 import csv
 from ar_track_alvar_msgs.msg import AlvarMarkers
+import rospkg
+rp = rospkg.RosPack()
+package_path = rp.get_path('ar_logger')
 
 #declaring variables, honestly don't know if this is bad python practice
 ID_list = []
 current_marker = 999 #placeholder variable to prevent logging the same ID more than once
-CSV_path = ("~/ros_ws/src/ar_logger/logs/IDlog.csv")
+CSV_path = (package_path + "/logs/IDlog.csv")
 
 def dupe_check(iterable,check):
     for x in iterable:
