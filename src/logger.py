@@ -16,7 +16,7 @@ current_marker = 999 #placeholder variable to prevent logging the same ID more t
 current_date = datetime.date.today()
 formatted_date = current_date.strftime("%Y-%m-%d")
 current_time_save = datetime.datetime.now()
-current_time_save = current_time.strftime("%H:%M:%S")
+current_time_save = current_time_save.strftime("%H:%M:%S")
 
 #gets csv file path for saving
 rp = rospkg.RosPack()
