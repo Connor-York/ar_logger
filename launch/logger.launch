@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="cam_image_topic" default="camera/image_raw" />
+  <arg name="cam_image_topic" default="camera/color/image_raw" />
   <arg name="cam_info_topic" default="camera/camera_info" />
 
   <node name="ar_track_alvar"
