@@ -15,11 +15,12 @@ current_marker = 999 #placeholder variable to prevent logging the same ID more t
 #getting date for saving
 current_date = datetime.date.today()
 formatted_date = current_date.strftime("%Y-%m-%d")
+current_time_save = current_date.time()
 
 #gets csv file path for saving
 rp = rospkg.RosPack()
 package_path = rp.get_path('ar_logger')
-CSV_path = (package_path + "/logs/IDlog" + formatted_date + ".csv")
+CSV_path = (package_path + "/logs/IDlog_" + formatted_date + "_" + current_time_save + ".csv")
 
 
 
