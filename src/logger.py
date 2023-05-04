@@ -64,10 +64,10 @@ def save_to_csv(): #called on shutdown, saves csv
     #    writer.writerow(Time_list)
 
     with open(CSV_path, "w", newline="") as file:
-    writer = csv.writer(file)
-    writer.writerow(["ID", "Timestamp"])
-    for i in range(len(ID_list)):
-        writer.writerow([ID_list[i], Time_list[i]])
+        writer = csv.writer(file)
+        writer.writerow(["ID", "Timestamp"])
+        for i in range(len(ID_list)):
+            writer.writerow([ID_list[i], Time_list[i]])
 
 
 if __name__ == "__main__":
