@@ -8,8 +8,8 @@ import datetime
 import time
 
 #declaring global
-ID_list = ['ID']
-Time_list = ['Time']
+ID_list = []
+Time_list = []
 current_marker = 999 #placeholder variable to prevent logging the same ID more than once
 
 #getting date for saving
@@ -51,16 +51,23 @@ def callback_ar_pose(msg):
                 Time_list.append(elapsed_time)
                 ID_list.append(current_marker)
             rospy.loginfo(current_marker)
+            rospy.loginfo(elapsed_time)
             rospy.loginfo(ID_list)
 
-def save_to_csv(): #called on shutdown, saves csv, overwrites file
+def save_to_csv(): #called on shutdown, saves csv
     
-    with open(CSV_path, 'w') as f:
+    #with open(CSV_path, 'w') as f:
+    #
+    #    writer = csv.writer(f)
+    #
+    #   writer.writerow(ID_list)
+    #    writer.writerow(Time_list)
 
-        writer = csv.writer(f)
-
-        writer.writerow(ID_list)
-        writer.writerow(Time_list)
+    with open(CSV_path, "w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["ID", "Timestamp"])
+    for i in range(len(ID_list)):
+        writer.writerow([ID_list[i], Time_list[i]])
 
 
 if __name__ == "__main__":
