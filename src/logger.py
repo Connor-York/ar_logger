@@ -44,7 +44,7 @@ def callback_ar_pose(msg):
         if marker.id != current_marker: # Check to prevent multi-logging
             current_time = time.time()
             elapsed_time = current_time - start_time
-
+            current_marker = marker.id 
             if dupe_check(ID_list,current_marker) == True:
                 continue
             else:
