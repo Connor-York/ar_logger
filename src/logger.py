@@ -5,11 +5,11 @@ import csv
 from ar_track_alvar_msgs.msg import AlvarMarkers
 import rospkg
 import datetime 
-
+import time
 
 #declaring global
-ID_list = []
-Time_list = []
+ID_list = ['ID']
+Time_list = ['Time']
 current_marker = 999 #placeholder variable to prevent logging the same ID more than once
 
 #getting date for saving
@@ -17,6 +17,8 @@ current_date = datetime.date.today()
 formatted_date = current_date.strftime("%Y-%m-%d")
 current_time_save = datetime.datetime.now()
 current_time_save = current_time_save.strftime("%H:%M:%S")
+
+start_time = time.time()
 
 #gets csv file path for saving
 rp = rospkg.RosPack()
@@ -40,13 +42,13 @@ def callback_ar_pose(msg):
         #rospy.loginfo(marker.id)
         #rospy.loginfo(marker.pose.pose)
         if marker.id != current_marker: # Check to prevent multi-logging
-            current_marker = marker.id
-            current_time = datetime.datetime.now()
-            formatted_time = current_time.strftime("%H:%M:%S")
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+
             if dupe_check(ID_list,current_marker) == True:
                 continue
             else:
-                Time_list.append(formatted_time)
+                Time_list.append(elapsed_time)
                 ID_list.append(current_marker)
             rospy.loginfo(current_marker)
             rospy.loginfo(ID_list)
