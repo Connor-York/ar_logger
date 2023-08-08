@@ -37,22 +37,51 @@ def dupe_check(iterable,check):
 def callback_ar_pose(msg):
     for marker in msg.markers:
         global ID_list
+        global tick
         global current_marker
+        global elapsed_time
         # These two just print the ID and Pose to the cmd line
         #rospy.loginfo(marker.id)
         #rospy.loginfo(marker.pose.pose)
-        if marker.id != current_marker: # Check to prevent multi-logging
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            current_marker = marker.id 
-            if dupe_check(ID_list,current_marker) == True:
-                continue
+        #print("Seen something")
+        print(marker.id)
+        print(ID_list)
+        
+        if marker.id < 18 and dupe_check(ID_list,marker.id) == None: #initial check to filter out anything that is outside of known limits (we have IDs 0 - 17)
+            #print("Initial filter passed")
+            if marker.id != current_marker :
+                #check if its been seen immediately before 
+                #if not add it to the buffer
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+                current_marker = marker.id 
+                tick = 0 
+                #print("Seen once")
             else:
+                tick += 1 # if it has been seen before increase number of times seen.
+                #print("Seen again :)")
+                #print(tick)
+            if tick == 3: #if it has been seen 4 times in a row add it to the list of seen IDs
+                #print("Seen enough")
                 Time_list.append(elapsed_time)
                 ID_list.append(current_marker)
-            rospy.loginfo(current_marker)
-            rospy.loginfo(elapsed_time)
-            rospy.loginfo(ID_list)
+
+
+
+        ## OLD CODE \/
+
+        # if marker.id != current_marker: # Check to prevent multi-logging
+        #     current_time = time.time()
+        #     elapsed_time = current_time - start_time
+        #     current_marker = marker.id 
+        #     if dupe_check(ID_list,current_marker) == True:
+        #         continue
+        #     else:
+        #         Time_list.append(elapsed_time)
+        #         ID_list.append(current_marker)
+        #     rospy.loginfo(current_marker)
+        #     rospy.loginfo(elapsed_time)
+        #     rospy.loginfo(ID_list)
 
 def save_to_csv(): #called on shutdown, saves csv
     
