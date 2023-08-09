@@ -10,7 +10,8 @@ import time
 #declaring global
 ID_list = []
 Time_list = []
-current_marker = 999 #placeholder variable to prevent logging the same ID more than once
+#current_marker = 999 #placeholder variable to prevent logging the same ID more than once
+buffer = []
 
 #getting date for saving
 current_date = datetime.date.today()
@@ -34,38 +35,34 @@ def dupe_check(iterable,check):
         if x == check:
             return True
 
+def buffer_check(buffer,check):
+  buffer.append(check)
+  if len(buffer) == 11:
+    buffer.pop(0)
+  tick = 0
+  for x in buffer: 
+    if x == check:
+      tick += 1
+      if tick == 3:
+        return True
+
 def callback_ar_pose(msg):
     for marker in msg.markers:
-        global ID_list
-        global tick
-        global current_marker
-        global elapsed_time
+
         # These two just print the ID and Pose to the cmd line
         #rospy.loginfo(marker.id)
         #rospy.loginfo(marker.pose.pose)
-        #print("Seen something")
-        print(marker.id)
+        #print(marker.id)
+        print(buffer)
         print(ID_list)
-        
-        if marker.id < 18 and dupe_check(ID_list,marker.id) == None: #initial check to filter out anything that is outside of known limits (we have IDs 0 - 17)
-            #print("Initial filter passed")
-            if marker.id != current_marker :
-                #check if its been seen immediately before 
-                #if not add it to the buffer
-                current_time = time.time()
-                elapsed_time = current_time - start_time
-                current_marker = marker.id 
-                tick = 0 
-                #print("Seen once")
-            else:
-                tick += 1 # if it has been seen before increase number of times seen.
-                #print("Seen again :)")
-                #print(tick)
-            if tick == 3: #if it has been seen 4 times in a row add it to the list of seen IDs
-                #print("Seen enough")
-                Time_list.append(elapsed_time)
-                ID_list.append(current_marker)
-
+    
+        #filter out fake IDs (>17), any IDs already in the list, and only accept those that have been seen thrice
+        if marker.id < 18 and dupe_check(ID_list,marker.id) == None and buffer_check(buffer,marker.id) == True: #initial check to filter out anything that is outside of known limits (we have IDs 0 - 17)
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+            Time_list.append(elapsed_time)
+            ID_list.append(marker.id)
+            
 
 
         ## OLD CODE \/
