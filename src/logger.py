@@ -53,8 +53,8 @@ def callback_ar_pose(msg):
         #rospy.loginfo(marker.id)
         #rospy.loginfo(marker.pose.pose)
         #print(marker.id)
-        print(buffer)
-        print(ID_list)
+#        print(buffer)
+#        print(ID_list)
     
         #filter out fake IDs (>17), any IDs already in the list, and only accept those that have been seen thrice
         if buffer_check(buffer,marker.id):
