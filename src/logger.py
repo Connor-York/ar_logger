@@ -57,11 +57,12 @@ def callback_ar_pose(msg):
         print(ID_list)
     
         #filter out fake IDs (>17), any IDs already in the list, and only accept those that have been seen thrice
-        if marker.id < 18 and dupe_check(ID_list,marker.id) == None and buffer_check(buffer,marker.id) == True: #initial check to filter out anything that is outside of known limits (we have IDs 0 - 17)
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            Time_list.append(elapsed_time)
-            ID_list.append(marker.id)
+        if buffer_check(buffer,marker.id):
+            if marker.id < 18 and dupe_check(ID_list, marker.id) == None:
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+                Time_list.append(elapsed_time)
+                ID_list.append(marker.id)
             
 
 
@@ -94,6 +95,9 @@ def save_to_csv(): #called on shutdown, saves csv
         writer.writerow(["ID", "Timestamp"])
         for i in range(len(ID_list)):
             writer.writerow([ID_list[i], Time_list[i]])
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        writer.writerow([999, elapsed_time])
 
 
 if __name__ == "__main__":
