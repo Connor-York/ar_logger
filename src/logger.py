@@ -9,22 +9,35 @@ import time
 
 #declaring global
 ID_list = []
+Rej_ID_list = []
+Rej_Time_list = []
 Time_list = []
 #current_marker = 999 #placeholder variable to prevent logging the same ID more than once
 buffer = []
 
 #getting date for saving
-current_date = datetime.date.today()
-formatted_date = current_date.strftime("%Y-%m-%d")
+#current_date = datetime.date.today()
+#formatted_date = current_date.strftime("%Y-%m-%d")
 current_time_save = datetime.datetime.now()
 current_time_save = current_time_save.strftime("%H:%M:%S")
 
 start_time = time.time()
 
+
+
 #gets csv file path for saving
 rp = rospkg.RosPack()
 package_path = rp.get_path('ar_logger')
-CSV_path = (package_path + "/logs/IDlog_" + formatted_date + "_" + current_time_save + ".csv")
+
+name = rospy.get_param("/ar_logger/robot_name")
+trial_no = rospy.get_param("/ar_logger/trial_no")
+trial_no = str(trial_no)
+scenario = rospy.get_param("/ar_logger/trial_scenario")
+
+csv_name = (name + "_" + scenario + "_" + trial_no + ".csv")
+
+CSV_path = (package_path + "/logs/" + current_time_save + "_ID_" + csv_name)
+CSV_rej_path = (package_path + "/logs/" + current_time_save + "_REJ-ID_" + csv_name)
 
 
 
@@ -58,12 +71,19 @@ def callback_ar_pose(msg):
     
         #filter out fake IDs (>17), any IDs already in the list, and only accept those that have been seen thrice
         if buffer_check(buffer,marker.id):
-            if marker.id < 18 and dupe_check(ID_list, marker.id) == None:
-                current_time = time.time()
-                elapsed_time = current_time - start_time
-                Time_list.append(elapsed_time)
-                ID_list.append(marker.id)
-            
+            if marker.id < 18:
+                if dupe_check(ID_list, marker.id) == None:
+                    print("ACCEPTED")
+                    current_time = time.time()
+                    elapsed_time = current_time - start_time
+                    Time_list.append(elapsed_time)
+                    ID_list.append(marker.id)
+                elif dupe_check(ID_list, marker.id) == True:
+                    print("REJECTED")
+                    current_time = time.time()
+                    elapsed_time = current_time - start_time
+                    Rej_Time_list.append(elapsed_time)
+                    Rej_ID_list.append(marker.id)
 
 
         ## OLD CODE \/
@@ -81,7 +101,13 @@ def callback_ar_pose(msg):
         #     rospy.loginfo(elapsed_time)
         #     rospy.loginfo(ID_list)
 
-def save_to_csv(): #called on shutdown, saves csv
+# def save_to_csv(csv_path,data):
+#     with open(csv_path, "a", newline="") as file:
+#         writer = csv.writer(file)
+#         writer.writerow(data)
+
+
+def save_to_csv(CSV_path,ID_list,Time_list): #called on shutdown, saves csv
     
     #with open(CSV_path, 'w') as f:
     #
@@ -99,6 +125,9 @@ def save_to_csv(): #called on shutdown, saves csv
         elapsed_time = end_time - start_time
         writer.writerow([999, elapsed_time])
 
+def closingproc():
+    save_to_csv(CSV_path,ID_list,Time_list)
+    save_to_csv(CSV_rej_path,Rej_ID_list,Rej_Time_list)
 
 if __name__ == "__main__":
         rospy.init_node("ar_logger")
@@ -108,6 +137,6 @@ if __name__ == "__main__":
         )
 
         rospy.spin()
-        rospy.on_shutdown(save_to_csv) #call on shutdown
+        rospy.on_shutdown(closingproc()) #call on shutdown
 
 
