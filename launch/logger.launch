@@ -14,12 +14,7 @@
   </node>
 
   <node name="ar_logger" pkg="ar_logger" type="logger.py" output="screen">
-        <param name="robot_name" value="Connor"/> 
-        <param name="trial_no" value="1"/>
-        <param name="trial_scenario" value="AF"/> 
-        <!-- For the trial scenario, the four scenarios are: 
-        AF = all fast, AS = all slow, 1:3FS = 1 fast 3 slow, 2:2FS = 50/50 split
-        3:1FS = 3 fast 1 slow -->  
+        <rosparam command="load" file="$(find leo_navigation)/config/Robot_config.yaml" /> 
   </node>
 
 </launch>

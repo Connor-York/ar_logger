@@ -73,13 +73,13 @@ def callback_ar_pose(msg):
         if buffer_check(buffer,marker.id):
             if marker.id < 18:
                 if dupe_check(ID_list, marker.id) == None:
-                    print("ACCEPTED")
+                    #print("ACCEPTED")
                     current_time = time.time()
                     elapsed_time = current_time - start_time
                     Time_list.append(elapsed_time)
                     ID_list.append(marker.id)
                 elif dupe_check(ID_list, marker.id) == True:
-                    print("REJECTED")
+                    #print("REJECTED")
                     current_time = time.time()
                     elapsed_time = current_time - start_time
                     Rej_Time_list.append(elapsed_time)
